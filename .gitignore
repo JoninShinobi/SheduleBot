@@ -1,0 +1,23 @@
+# Environment variables
+.env
+
+# Node modules
+node_modules/
+
+# PM2 logs
+.pm2/
+
+# Application logs
+logs/
+*.log
+
+# Config with sensitive data
+config/google-token.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
