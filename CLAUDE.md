@@ -105,10 +105,13 @@ logs/                      # All log files
 
 ### 15. BUILD VERIFICATION - ABSOLUTE REQUIREMENT
 - **ALWAYS** run `node index.js` to verify bot starts
+- **ALWAYS** restart PM2 after EVERY code change: `pm2 restart chronos-bot`
+- **ALWAYS** verify PM2 restart succeeded: `pm2 logs chronos-bot`
 - **ALWAYS** check pm2 status after each major change
 - **ALWAYS** verify all commands are registered in Discord
 - **ALWAYS** test each command individually before proceeding
 - **NEVER** continue building if any component fails
+- **MANDATORY:** PM2 restart is REQUIRED after every file modification
 
 ### 16. MANDATORY GIT BACKUP PROTOCOL - CRITICAL
 - **IMPERATIVE:** All code MUST be pushed to https://github.com/JoninShinobi/SheduleBot.git

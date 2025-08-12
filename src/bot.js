@@ -14,12 +14,33 @@ class ScheduleAssistant {
         });
 
         this.commands = new Collection();
+        this.loadCommands();
         this.setupEventHandlers();
+    }
+
+    loadCommands() {
+        const commandsPath = path.join(__dirname, 'commands');
+        if (!fs.existsSync(commandsPath)) return;
+
+        const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+        
+        for (const file of commandFiles) {
+            const filePath = path.join(commandsPath, file);
+            const command = require(filePath);
+            
+            if ('data' in command && 'execute' in command) {
+                this.commands.set(command.data.name, command);
+                console.log(`✅ Loaded command: ${command.data.name}`);
+            } else {
+                console.log(`⚠️ Command ${file} is missing required "data" or "execute" property.`);
+            }
+        }
     }
 
     setupEventHandlers() {
         this.client.once('ready', () => {
             console.log(`🤖 Schedule Assistant Bot ready! Logged in as ${this.client.user.tag}`);
+            this.registerCommands();
         });
 
         this.client.on('interactionCreate', async interaction => {
@@ -41,6 +62,17 @@ class ScheduleAssistant {
                 }
             }
         });
+    }
+
+    async registerCommands() {
+        try {
+            const commandData = Array.from(this.commands.values()).map(command => command.data.toJSON());
+            
+            await this.client.application.commands.set(commandData);
+            console.log(`✅ Registered ${commandData.length} slash commands`);
+        } catch (error) {
+            console.error('❌ Error registering commands:', error);
+        }
     }
 
     async start() {
