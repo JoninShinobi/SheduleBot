@@ -1,8 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const GoogleCalendarService = require('../services/googleCalendar');
+const GeminiAIService = require('../services/geminiAI');
 const moment = require('moment-timezone');
 
 const calendarService = new GoogleCalendarService();
+const aiService = new GeminiAIService();
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,6 +29,15 @@ module.exports = {
             // Get current events
             const currentEvents = await calendarService.getCurrentEvents();
             const now = moment().tz(process.env.USER_TIMEZONE);
+
+            // Generate AI insights for current events
+            let aiInsight = null;
+            if (aiService.isReady() && currentEvents.length > 0) {
+                const aiResult = await aiService.generateCalendarInsight(currentEvents, 'current');
+                if (aiResult.success) {
+                    aiInsight = aiResult.insight;
+                }
+            }
 
             if (currentEvents.length === 0) {
                 const embed = new EmbedBuilder()
@@ -67,6 +78,15 @@ module.exports = {
                     inline: false
                 });
             });
+
+            // Add AI insights if available
+            if (aiInsight) {
+                embed.addFields({
+                    name: '🤖 AI Insights',
+                    value: aiInsight.substring(0, 1000) + (aiInsight.length > 1000 ? '...' : ''),
+                    inline: false
+                });
+            }
 
             await interaction.editReply({ embeds: [embed] });
 
