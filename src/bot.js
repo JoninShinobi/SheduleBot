@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const GoalManagerService = require('./services/goalManager');
 require('dotenv').config();
 
 class ScheduleAssistant {
@@ -14,6 +15,7 @@ class ScheduleAssistant {
         });
 
         this.commands = new Collection();
+        this.goalManager = new GoalManagerService();
         this.loadCommands();
         this.setupEventHandlers();
     }
