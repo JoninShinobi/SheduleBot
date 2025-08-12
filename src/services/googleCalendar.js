@@ -62,6 +62,29 @@ class GoogleCalendarService {
         }
     }
 
+    async getTodaysEvents() {
+        if (!this.calendar) return [];
+        
+        try {
+            const today = moment().tz(process.env.USER_TIMEZONE);
+            const startOfDay = today.clone().startOf('day').toISOString();
+            const endOfDay = today.clone().endOf('day').toISOString();
+            
+            const response = await this.calendar.events.list({
+                calendarId: process.env.PRIMARY_CALENDAR_ID,
+                timeMin: startOfDay,
+                timeMax: endOfDay,
+                singleEvents: true,
+                orderBy: 'startTime'
+            });
+            
+            return response.data.items || [];
+        } catch (error) {
+            console.error('Error fetching today\'s events:', error);
+            return [];
+        }
+    }
+
     isCalendarReady() {
         return this.calendar !== null;
     }

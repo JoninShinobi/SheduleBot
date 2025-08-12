@@ -124,6 +124,9 @@ logs/                      # All log files
 - **ALWAYS** use descriptive branch names: `feature/command-hello`, `feature/service-calendar`, etc.
 - **ALWAYS** wait for explicit user confirmation before moving to next function
 - **NEVER** lose working code - backup everything that works
+- **NEVER** delete feature branches - they are permanent stable fallbacks
+- **DEVELOPMENT PHASE:** Keep all feature branches as stable rollback points
+- **PRODUCTION PHASE:** Use version tags only after rigorous bulletproof testing
 - **CRITICAL:** If push fails, STOP development until GitHub access is resolved
 
 ### 17. USER VERIFICATION REQUIREMENT - ABSOLUTE
@@ -152,5 +155,25 @@ logs/                      # All log files
 - Repository: https://github.com/JoninShinobi/SheduleBot.git
 - Location: /home/jonin/bots/discordbots/chronos/
 - AI Integration: Google Gemini for ALL calendar functionality
+
+### 19. MANDATORY PRE-ACTION SELF-CHECK - ABSOLUTE REQUIREMENT
+- **ALWAYS** check protocols before any major action
+- **NEVER** proceed without verifying compliance with ALL rules above
+- **MANDATORY** reference: Rules #15 (PM2), #16 (Git), #17 (User Verification), #18 (Gemini AI)
+
+#### PROTOCOL CHECKLIST (CHECK BEFORE EVERY ACTION):
+□ **Check Rule #15:** Do I need to restart PM2 after changes?
+□ **Check Rule #16:** Am I on correct git branch? Need commit/push after user verification?
+□ **Check Rule #17:** Do I need USER VERIFICATION before proceeding?
+□ **Check Rule #18:** Does this need Gemini AI integration (calendar functionality)?
+
+#### CURRENT STATE TRACKER:
+```
+CURRENT BRANCH: [Update this]
+LAST ACTION: [Update this] 
+NEXT REQUIRED: [Update this]
+USER VERIFICATION STATUS: [NEEDED/COMPLETED]
+PM2 STATUS: [NEEDS_RESTART/UP_TO_DATE]
+```
 
 **VIOLATION OF THESE DIRECTIVES IS UNACCEPTABLE**
