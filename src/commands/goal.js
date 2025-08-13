@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const GoalManagerService = require('../services/goalManager');
 
 const goalManager = new GoalManagerService();
@@ -102,7 +102,7 @@ module.exports = {
                 
                 const saveResult = await goalManager.saveGoal(interaction.user.id, goalData);
                 
-                // Show results with AI analysis
+                // Show results with AI analysis and action buttons
                 const resultEmbed = new EmbedBuilder()
                     .setColor(0x00ff00)
                     .setTitle('🎯 Goal Analysis Complete & Saved')
@@ -111,11 +111,33 @@ module.exports = {
                         name: '🤖 AI Analysis & Recommendations',
                         value: analysis.analysis.substring(0, 1000) + (analysis.analysis.length > 1000 ? '...' : ''),
                         inline: false
+                    }, {
+                        name: '📋 Planned Tasks',
+                        value: analysis.tasks.map((task, index) => 
+                            `${index + 1}. **${task.title}** (${task.estimatedHours}h) - ${task.priority}`
+                        ).join('\n').substring(0, 1000),
+                        inline: false
                     })
-                    .setFooter({ text: `Chronos Goal Assistant • Complexity: ${analysis.complexity} • Est: ${analysis.estimatedHours}h • Saved: ${saveResult.success ? 'Yes' : 'Failed'}` })
+                    .setFooter({ text: `Chronos Goal Assistant • Plan ID: ${analysis.planId} • Complexity: ${analysis.complexity} • Est: ${analysis.estimatedHours}h` })
                     .setTimestamp();
 
-                await interaction.editReply({ embeds: [resultEmbed] });
+                // Create action buttons for /create and /revise
+                const actionRow = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`create_plan_${analysis.planId}`)
+                            .setLabel('✅ Create Calendar Plan')
+                            .setStyle(ButtonStyle.Success),
+                        new ButtonBuilder()
+                            .setCustomId(`revise_plan_${analysis.planId}`)
+                            .setLabel('🔄 Revise Plan')
+                            .setStyle(ButtonStyle.Secondary)
+                    );
+
+                await interaction.editReply({ 
+                    embeds: [resultEmbed], 
+                    components: [actionRow] 
+                });
             } else {
                 // Show error if AI analysis failed
                 const errorEmbed = new EmbedBuilder()
